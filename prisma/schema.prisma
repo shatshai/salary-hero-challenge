@@ -38,6 +38,6 @@ model Employee {
   salary    Float
   salaryTypeId Int  @map("salary_type_id")
   salaryType SalaryType @relation(fields: [salaryTypeId], references: [id])
-  payDate   Int?    @map("pay_date")
+  payDate   Int     @map("pay_date")  @default(1)
   @@map("employee")
 }
