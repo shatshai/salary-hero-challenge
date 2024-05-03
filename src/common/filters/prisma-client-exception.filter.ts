@@ -13,9 +13,19 @@ export class PrismaClientExceptionFilter extends BaseExceptionFilter {
     const message = exception.message.replace(/\n/g, '')
 
     switch (exception.code) {
+      case 'P2000': {
+        const status = HttpStatus.BAD_REQUEST
+        response.status(status).json({
+          statusCode: status,
+          timestamp: new Date().toISOString(),
+          path: request.url,
+          message: message,
+        })
+        break
+      }
       case 'P2021':
       case 'P2002': {
-        const status = HttpStatus.UNPROCESSABLE_ENTITY
+        const status = HttpStatus.CONFLICT
         response.status(status).json({
           statusCode: status,
           timestamp: new Date().toISOString(),
