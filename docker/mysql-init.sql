@@ -28,8 +28,8 @@ CREATE TABLE IF NOT EXISTS employee (
   salary DOUBLE(10, 2) UNSIGNED NOT NULL,
   salary_type_id TINYINT UNSIGNED NOT NULL,
   pay_date TINYINT UNSIGNED NOT NULL DEFAULT 1,
-  KEY idx_username (username),
-  KEY idx_email (email),
+  UNIQUE KEY idx_username (username),
+  UNIQUE KEY idx_email (email),
   KEY idx_company (company_id)
 );
 
