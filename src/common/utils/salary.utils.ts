@@ -1,10 +1,8 @@
 import * as dayjs from 'dayjs'
+import { BadRequestException } from '@nestjs/common'
 import { SalaryTypes, INCLUDE_PAYMENT_DATE } from '@app/config/constants'
 import { Employee } from '@prisma/client'
-import {
-  EmployeeWithCompanyWithSalaryType,
-  WithSalaryRate,
-} from '@app/modules/employee/types'
+import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from '@app/modules/employee/types'
 
 /**
  * Computes the salary rate for an employee based on their salary type (monthly or daily).
@@ -13,20 +11,19 @@ import {
  */
 export function computeSalaryRate(
   employee: Employee | EmployeeWithCompanyWithSalaryType,
-):
-  | WithSalaryRate<Employee>
-  | WithSalaryRate<EmployeeWithCompanyWithSalaryType> {
+): WithSalaryRate<Employee> | WithSalaryRate<EmployeeWithCompanyWithSalaryType> {
   // Get the current date
   const currentDate = dayjs()
+  if (employee.salaryTypeId === SalaryTypes.MONTH_TO_DATE && !employee.payDate) {
+    throw new BadRequestException('Employee payment date is not set')
+  }
 
   // Check if the current date is before the pay date
   const isDataBeforePayDate = currentDate.date() < employee.payDate
 
   // Determine the start date based on salary type (monthly or monthly-to-date)
   const startDateFormat =
-    employee.salaryTypeId === SalaryTypes.MONTH_TO_DATE
-      ? `YYYY-MM-${employee.payDate}`
-      : 'YYYY-MM-01'
+    employee.salaryTypeId === SalaryTypes.MONTH_TO_DATE ? `YYYY-MM-${employee.payDate}` : 'YYYY-MM-01'
   const lastPaymentDate = isDataBeforePayDate
     ? currentDate.subtract(1, 'month') // Use the last month's data if before pay date
     : currentDate

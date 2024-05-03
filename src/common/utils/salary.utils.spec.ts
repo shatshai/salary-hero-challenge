@@ -92,9 +92,7 @@ describe('salary.utils', () => {
         jest.useFakeTimers().setSystemTime(new Date(todayDate as string))
 
         // Calculate salary rate for the employee
-        const { salaryRate } = computeSalaryRate(
-          employee as unknown as EmployeeWithCompanyWithSalaryType,
-        )
+        const { salaryRate } = computeSalaryRate(employee as unknown as EmployeeWithCompanyWithSalaryType)
 
         // Check if the calculated salary rate matches the expected value
         expect(salaryRate).toEqual(expected)

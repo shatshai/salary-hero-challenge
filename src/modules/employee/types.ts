@@ -6,9 +6,7 @@ const employeeWithCompany = Prisma.validator<Prisma.EmployeeDefaultArgs>()({
 })
 
 // Define the type for an employee with company and salary type included
-export type EmployeeWithCompany = Prisma.EmployeeGetPayload<
-  typeof employeeWithCompany
->
+export type EmployeeWithCompany = Prisma.EmployeeGetPayload<typeof employeeWithCompany>
 
 // Define a type for salary rate
 export type SalaryRate = {
