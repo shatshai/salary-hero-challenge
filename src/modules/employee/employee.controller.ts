@@ -1,8 +1,9 @@
-import { Controller, Get, Logger, Param, Query, NotFoundException } from '@nestjs/common'
-import { ApiParam, ApiQuery } from '@nestjs/swagger'
+import { Controller, Body, Get, Logger, Param, Post, Query, NotFoundException } from '@nestjs/common'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { EmployeeService } from '@app/modules/employee/employee.service'
 import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/employee-with-salary-rate.entity'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
+import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
 
 @Controller('/employee')
 export class EmployeeController {
@@ -55,5 +56,21 @@ export class EmployeeController {
   async getEmployee(@Param('id', new ParseIntPipe()) id: number): Promise<EmployeeWithSalaryRateEntity> {
     // Call the employeeService to retrieve the employee by ID.
     return this.employeeService.getEmployee(id)
+  }
+
+  /**
+   * Endpoint to create a new employee.
+   * @param createEmployeeDto - The data for creating the employee.
+   * @returns A Promise resolving to an object representing the created employee with salary details.
+   */
+  @Post()
+  @ApiBody({
+    description: 'Employee details',
+    type: CreateEmployeeDto,
+  })
+  @ApiCreatedResponse({ type: EmployeeWithSalaryRateEntity })
+  async createEmployee(@Body() createEmployeeDto: CreateEmployeeDto): Promise<EmployeeWithSalaryRateEntity> {
+    // Call the employeeService to create the employee with the provided data.
+    return this.employeeService.createEmployee(createEmployeeDto)
   }
 }

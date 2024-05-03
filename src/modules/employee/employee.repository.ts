@@ -1,5 +1,5 @@
 import { Logger, Injectable } from '@nestjs/common'
-import { Prisma } from '@prisma/client'
+import { Employee, Prisma } from '@prisma/client'
 import { PrismaService } from '@app/infrastructure/prisma/prisma.service'
 import { EmployeeWithCompany } from './types'
 
@@ -50,6 +50,18 @@ export class EmployeeRepository {
         salaryType: true,
       },
       where: employeeWhereUniqueInput,
+    })
+  }
+
+  /**
+   * Creates a new employee with the provided data.
+   * @param data - The data for creating the employee.
+   * @returns A Promise resolving to the created employee object.
+   */
+  async createEmployee(data: Prisma.EmployeeCreateInput | Prisma.EmployeeUncheckedCreateInput): Promise<Employee> {
+    // Use Prisma's create method to create a new employee with the provided data.
+    return this.prisma.employee.create({
+      data,
     })
   }
 }

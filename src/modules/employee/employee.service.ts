@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash'
 import { EmployeeRepository } from '@app/modules/employee/employee.repository'
 import { computeSalaryRate } from '@app/common/utils/salary.utils'
 import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from './types'
+import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
 
 @Injectable()
 export class EmployeeService {
@@ -57,6 +58,27 @@ export class EmployeeService {
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`GetEmployees error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Creates a new employee with the provided data and computes their salary rate.
+   * @param data - The data for creating the employee.
+   * @returns A Promise resolving to an object containing the created employee's salary details.
+   */
+  async createEmployee(
+    data: CreateEmployeeDto,
+  ): Promise<WithSalaryRate<Employee> | WithSalaryRate<EmployeeWithCompanyWithSalaryType> | null> {
+    try {
+      // Call the employeeRepository to create the employee with the provided data.
+      const employee = await this.employeeRepository.createEmployee(data)
+
+      // Compute and return the salary rate for the created employee.
+      return computeSalaryRate(employee)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`CreateEmployee error: ${error.message}`)
       throw error
     }
   }
