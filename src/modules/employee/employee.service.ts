@@ -5,6 +5,7 @@ import { EmployeeRepository } from '@app/modules/employee/employee.repository'
 import { computeSalaryRate } from '@app/common/utils/salary.utils'
 import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from './types'
 import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
+import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto'
 
 @Injectable()
 export class EmployeeService {
@@ -79,6 +80,29 @@ export class EmployeeService {
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`CreateEmployee error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Updates an employee with the provided ID using the data from UpdateEmployeeDto and computes their salary rate.
+   * @param id - The ID of the employee to update.
+   * @param data - The data for updating the employee.
+   * @returns A Promise resolving to an object containing the updated employee's salary details.
+   */
+  async updateEmployee(
+    id: number,
+    data: UpdateEmployeeDto,
+  ): Promise<WithSalaryRate<Employee> | WithSalaryRate<EmployeeWithCompanyWithSalaryType>> {
+    try {
+      // Call the employeeRepository to update the employee with the provided ID and data.
+      const employee = await this.employeeRepository.updateEmployee(id, data)
+
+      // Compute and return the salary rate for the updated employee.
+      return computeSalaryRate(employee)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`UpdateEmployee error: ${error.message}`)
       throw error
     }
   }

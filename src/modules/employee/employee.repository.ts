@@ -64,4 +64,23 @@ export class EmployeeRepository {
       data,
     })
   }
+
+  /**
+   * Updates an employee with the provided ID using the given data.
+   * @param id - The ID of the employee to update.
+   * @param data - The data for updating the employee.
+   * @returns A Promise resolving to the updated employee object.
+   */
+  updateEmployee(
+    id: number,
+    data: Prisma.EmployeeUpdateInput | Prisma.EmployeeUncheckedUpdateInput,
+  ): Promise<Employee> {
+    // Use Prisma's update method to update the employee with the provided data and ID.
+    return this.prisma.employee.update({
+      data,
+      where: {
+        id,
+      },
+    })
+  }
 }

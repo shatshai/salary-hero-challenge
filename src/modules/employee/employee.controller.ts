@@ -1,9 +1,10 @@
-import { Controller, Body, Get, Logger, Param, Post, Query, NotFoundException } from '@nestjs/common'
+import { Controller, Body, Get, Logger, Param, Post, Put, Query, NotFoundException } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { EmployeeService } from '@app/modules/employee/employee.service'
 import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/employee-with-salary-rate.entity'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
+import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto'
 
 @Controller('/employee')
 export class EmployeeController {
@@ -65,12 +66,38 @@ export class EmployeeController {
    */
   @Post()
   @ApiBody({
-    description: 'Employee details',
+    description: 'Employee create details',
     type: CreateEmployeeDto,
   })
   @ApiCreatedResponse({ type: EmployeeWithSalaryRateEntity })
   async createEmployee(@Body() createEmployeeDto: CreateEmployeeDto): Promise<EmployeeWithSalaryRateEntity> {
     // Call the employeeService to create the employee with the provided data.
     return this.employeeService.createEmployee(createEmployeeDto)
+  }
+
+  @Put('/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'Employee ID',
+    type: Number,
+  })
+  @ApiBody({
+    description: 'Employee update details',
+    type: UpdateEmployeeDto,
+  })
+  @ApiCreatedResponse({ type: EmployeeWithSalaryRateEntity })
+  async updateEmployee(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
+  ): Promise<EmployeeWithSalaryRateEntity> {
+    try {
+      const employee = await this.employeeService.getEmployee(id)
+
+      return this.employeeService.updateEmployee(employee.id, updateEmployeeDto)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`UpdateEmployee error: ${error.message}`)
+      throw error
+    }
   }
 }

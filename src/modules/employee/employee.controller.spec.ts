@@ -6,6 +6,7 @@ import { EmployeeRepository } from './employee.repository'
 import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
 import { SalaryTypes } from '@app/config/constants'
 import { CreateEmployeeDto } from './dto/create-employee.dto'
+import { UpdateEmployeeDto } from './dto/update-employee.dto'
 import { EmployeeWithCompanyWithSalaryType } from './types'
 
 describe('EmployeeController', () => {
@@ -117,13 +118,39 @@ describe('EmployeeController', () => {
       const spyRepository = jest
         .spyOn(employeeRepository, 'createEmployee')
         .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
-      expect(employeeController.createEmployee(plainToInstance(CreateEmployeeDto, employeeData))).resolves.toEqual(
+      await expect(
+        employeeController.createEmployee(plainToInstance(CreateEmployeeDto, employeeData)),
+      ).resolves.toEqual(
         expect.objectContaining({
           id: 1,
+          salaryRate: expect.any(Number),
         }),
       )
       expect(spyRepository).toHaveBeenCalledWith(
         expect.not.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+  })
+
+  describe('updateEmployee', () => {
+    it('Should update and return employees as expected', async () => {
+      const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const spyRepository = jest
+        .spyOn(employeeRepository, 'updateEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      await expect(
+        employeeController.updateEmployee(employee.id, plainToInstance(UpdateEmployeeDto, employee)),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+          salaryRate: expect.any(Number),
+        }),
+      )
+      expect(spyRepository).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
           id: 1,
         }),
       )
