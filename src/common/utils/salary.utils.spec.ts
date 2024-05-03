@@ -98,5 +98,23 @@ describe('salary.utils', () => {
         expect(salaryRate).toEqual(expected)
       },
     )
+
+    it('Given payment date is null should throw exception', () => {
+      const employee = { id: 3, salaryTypeId: SalaryTypes.MONTH_TO_DATE, salary: 30000, payDate: null }
+      try {
+        computeSalaryRate(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      } catch (error) {
+        expect(error.message).toEqual('Employee payment date is not set')
+      }
+    })
+
+    it('Given payment date is 0 should throw exception', () => {
+      const employee = { id: 3, salaryTypeId: SalaryTypes.MONTH_TO_DATE, salary: 30000, payDate: 0 }
+      try {
+        computeSalaryRate(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      } catch (error) {
+        expect(error.message).toEqual('Employee payment date is not set')
+      }
+    })
   })
 })
