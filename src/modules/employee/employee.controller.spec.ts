@@ -156,4 +156,20 @@ describe('EmployeeController', () => {
       )
     })
   })
+
+  describe('deleteEmployee', () => {
+    it('Should update and return employees as expected', async () => {
+      const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const spyRepository = jest
+        .spyOn(employeeRepository, 'deleteEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      await expect(employeeController.deleteEmployee(employee.id)).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+          salaryRate: expect.any(Number),
+        }),
+      )
+      expect(spyRepository).toHaveBeenCalledWith(1)
+    })
+  })
 })

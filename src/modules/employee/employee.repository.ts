@@ -83,4 +83,18 @@ export class EmployeeRepository {
       },
     })
   }
+
+  /**
+   * Deletes an employee with the provided ID.
+   * @param id - The ID of the employee to delete.
+   * @returns A Promise resolving to the deleted employee object.
+   */
+  deleteEmployee(id: number): Promise<Employee> {
+    // Use Prisma's delete method to delete the employee with the provided ID.
+    return this.prisma.employee.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }

@@ -106,4 +106,23 @@ export class EmployeeService {
       throw error
     }
   }
+
+  /**
+   * Deletes an employee with the provided ID and computes their salary rate.
+   * @param id - The ID of the employee to delete.
+   * @returns A Promise resolving to an object containing the deleted employee's salary details.
+   */
+  async deleteEmployee(id: number): Promise<WithSalaryRate<Employee>> {
+    try {
+      // Call the employeeRepository to delete the employee with the provided ID.
+      const employee = await this.employeeRepository.deleteEmployee(id)
+
+      // Compute and return the salary rate for the updated employee.
+      return computeSalaryRate(employee)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`DeleteEmployee error: ${error.message}`)
+      throw error
+    }
+  }
 }

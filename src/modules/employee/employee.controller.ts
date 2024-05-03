@@ -1,4 +1,4 @@
-import { Controller, Body, Get, Logger, Param, Post, Put, Query, NotFoundException } from '@nestjs/common'
+import { Controller, Body, Delete, Get, Logger, Param, Post, Put, Query, NotFoundException } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { EmployeeService } from '@app/modules/employee/employee.service'
 import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/employee-with-salary-rate.entity'
@@ -97,6 +97,32 @@ export class EmployeeController {
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`UpdateEmployee error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Endpoint to delete an employee by ID.
+   * @param id - The ID of the employee to delete.
+   * @returns A Promise resolving to an object representing the deleted employee with salary details.
+   */
+  @Delete('/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'Employee ID',
+    type: Number,
+  })
+  @ApiCreatedResponse({ type: EmployeeWithSalaryRateEntity })
+  async deleteEmployee(@Param('id', new ParseIntPipe()) id: number): Promise<EmployeeWithSalaryRateEntity> {
+    try {
+      // Retrieve the employee details based on the provided ID.
+      const employee = await this.employeeService.getEmployee(id)
+
+      // Call the employeeService to delete the employee with the retrieved ID.
+      return this.employeeService.deleteEmployee(employee.id)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`DeleteEmployee error: ${error.message}`)
       throw error
     }
   }
