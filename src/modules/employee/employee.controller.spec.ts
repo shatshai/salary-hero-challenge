@@ -54,7 +54,7 @@ describe('EmployeeController', () => {
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployees')
         .mockResolvedValue([] as unknown as EmployeeWithCompanyWithSalaryType[])
-      expect(employeeController.getEmployees(null, null)).rejects.toThrow('')
+      expect(employeeController.getEmployees(null, null)).rejects.toThrow('Employees not found')
       expect(spyRepository).toHaveBeenCalledWith(
         expect.objectContaining({
           companyId: null,
@@ -67,11 +67,42 @@ describe('EmployeeController', () => {
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployees')
         .mockResolvedValue(null as unknown as EmployeeWithCompanyWithSalaryType[])
-      expect(employeeController.getEmployees(null, null)).rejects.toThrow('')
+      expect(employeeController.getEmployees(null, null)).rejects.toThrow('Employees not found')
       expect(spyRepository).toHaveBeenCalledWith(
         expect.objectContaining({
           companyId: null,
           email: null,
+        }),
+      )
+    })
+  })
+
+  describe('getEmployee', () => {
+    it('Given found employee - Should return employees as expected', async () => {
+      const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const spyRepository = jest
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      expect(employeeController.getEmployee(1)).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+      expect(spyRepository).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+
+    it('Given select result with null - Should throw not found exception', async () => {
+      const spyRepository = jest
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(null as unknown as EmployeeWithCompanyWithSalaryType)
+      expect(employeeController.getEmployee(1)).rejects.toThrow('Employee not found')
+      expect(spyRepository).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 1,
         }),
       )
     })

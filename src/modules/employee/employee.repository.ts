@@ -30,4 +30,26 @@ export class EmployeeRepository {
       where: employeeWhereInput,
     })
   }
+
+  /**
+   * Retrieves an employee with company details based on the provided unique input.
+   * @param employeeWhereUniqueInput - The unique input identifying the employee.
+   * @returns A Promise resolving to an EmployeeWithCompany object or null if not found.
+   */
+  getEmployee(employeeWhereUniqueInput: Prisma.EmployeeWhereUniqueInput): Promise<EmployeeWithCompany | null> {
+    // Retrieve the employee with company details from the database.
+    return this.prisma.employee.findUnique<{
+      where: Prisma.EmployeeWhereUniqueInput
+      include: {
+        company: true
+        salaryType: true
+      }
+    }>({
+      include: {
+        company: true,
+        salaryType: true,
+      },
+      where: employeeWhereUniqueInput,
+    })
+  }
 }
