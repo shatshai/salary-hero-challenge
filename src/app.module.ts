@@ -1,8 +1,9 @@
-import { Module } from '@nestjs/common'
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
 import { EmployeeModule } from '@app/modules/employee/employee.module'
+import { LoggerMiddleware } from '@app/common/middleware/logger.middleware'
 
 // Define the main application module
 @Module({
@@ -10,4 +11,8 @@ import { EmployeeModule } from '@app/modules/employee/employee.module'
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*')
+  }
+}
