@@ -1,5 +1,6 @@
 import { Logger, Injectable, NotFoundException } from '@nestjs/common'
 import { Employee, Prisma } from '@prisma/client'
+import { isEmpty } from 'lodash'
 import { EmployeeRepository } from '@app/modules/employee/employee.repository'
 import { computeSalaryRate } from '@app/common/utils/salary.utils'
 import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from './types'
@@ -23,7 +24,7 @@ export class EmployeeService {
       // Retrieve employees from the repository based on the input criteria
       const employees = await this.employeeRepository.getEmployees(employeeWhereInput)
 
-      if (!employees) {
+      if (isEmpty(employees)) {
         throw new NotFoundException('Employees not found')
       }
 
