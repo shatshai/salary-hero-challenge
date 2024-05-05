@@ -46,6 +46,55 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## Docker Test Environment
+
+### Prerequisites
+- Docker installed on your machine.
+
+### Setting Up Docker Test Environment
+1. Clone the repository:
+
+```bash
+git clone https://github.com/shatshai/salary-backend-api
+cd salary-backend-api
+```
+
+2. Build and start the Docker containers
+```bash
+docker-compose up -d --build
+```
+
+## Testing the Backend API
+* Once the Docker containers are running, you can test the backend API by sending HTTP requests to http://localhost:3000/sawgger using tools like cURL, Postman, or your browser.
+
+## Stopping the Docker Containers
+```bash
+docker-compose down
+```
+
+## Endpoints
+
+### Company
+
+- `GET /company`: Retrieves a list of all companies.
+- `POST /company`: Creates a new company.
+
+- `GET /company/:id`: Retrieves details of a specific company.
+- `PUT /company/:id`: Updates details of a specific company.
+- `DELETE /company/:id`: Deletes a specific company.
+
+### Employee
+
+- `GET /employee`: Retrieves a list of all employees.
+- `POST /employee`: Creates a new employee.
+
+- `GET /employee/:id`: Retrieves details of a specific employee.
+- `PUT /employee/:id`: Updates details of a specific employee.
+- `DELETE /employee/:id`: Deletes a specific employee.
+
+### Swagger Api Document
+- `GET /swagger`: List the APIs document.
+
 ## Libraries
 
 - **@nestjs/swagger**: A library that integrates Swagger (OpenAPI) with NestJS, allowing for automatic API documentation generation and interactive API exploration.
