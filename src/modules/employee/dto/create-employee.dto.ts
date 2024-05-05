@@ -40,6 +40,7 @@ export class CreateEmployeeDto {
     name: 'salaryTypeId',
     description: 'Employee Salary Type ID',
     enum: SalaryTypes,
+    type: Number,
   })
   readonly salaryTypeId: SalaryTypes
 
