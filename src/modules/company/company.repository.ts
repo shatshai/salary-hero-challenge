@@ -1,6 +1,7 @@
 import { Logger, Injectable } from '@nestjs/common'
 import { Company, Prisma } from '@prisma/client'
 import { PrismaService } from '@app/infrastructure/prisma/prisma.service'
+import { CompanyWithEmployees } from './types'
 
 @Injectable()
 export class CompanyRepository {
@@ -31,6 +32,28 @@ export class CompanyRepository {
     return this.prisma.company.findUnique<{
       where: Prisma.CompanyWhereUniqueInput
     }>({
+      where: companyWhereUniqueInput,
+    })
+  }
+
+  /**
+   * Retrieves an company details based on the provided unique input.
+   * @param companyWhereUniqueInput - The unique input identifying the company with company's employees
+   * @returns A Promise resolving to an Company object or null if not found.
+   */
+  getCompanyWithEmployees(
+    companyWhereUniqueInput: Prisma.CompanyWhereUniqueInput,
+  ): Promise<CompanyWithEmployees | null> {
+    // Retrieve the company details from the database.
+    return this.prisma.company.findUnique<{
+      include: {
+        employeeies: true
+      }
+      where: Prisma.CompanyWhereUniqueInput
+    }>({
+      include: {
+        employeeies: true,
+      },
       where: companyWhereUniqueInput,
     })
   }

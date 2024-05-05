@@ -6,6 +6,7 @@ import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { CompanyEntity } from './entities/company.entity'
 import { UpdateCompanyDto } from './dto/update-company.dto'
+import { CompanyWithEmployees } from './types'
 
 @Controller('/company')
 export class CompanyController {
@@ -43,7 +44,7 @@ export class CompanyController {
   /**
    * Endpoint to retrieve an company by ID.
    * @param id - The ID of the company to retrieve.
-   * @returns A Promise resolving to a object representing the company.
+   * @returns A Promise resolving to a object representing the company and company's employees
    */
   @Get('/:id')
   @ApiParam({
@@ -51,9 +52,11 @@ export class CompanyController {
     description: 'Company ID',
     type: Number,
   })
-  async getCompany(@Param('id', new ParseIntPipe()) id: number): Promise<Company | NotFoundException> {
+  async getCompanyWithEmployees(
+    @Param('id', new ParseIntPipe()) id: number,
+  ): Promise<Company | CompanyWithEmployees | NotFoundException> {
     // Call the companyService to retrieve the company by ID.
-    return this.companyService.getCompany(id)
+    return this.companyService.getCompanyWithEmployees(id)
   }
 
   /**
@@ -109,11 +112,11 @@ export class CompanyController {
     description: 'Company ID',
     type: Number,
   })
-  @ApiCreatedResponse({ type: CompanyEntity})
+  @ApiCreatedResponse({ type: CompanyEntity })
   async deleteCompany(@Param('id', new ParseIntPipe()) id: number): Promise<CompanyEntity> {
     try {
       // Retrieve the company details based on the provided ID.
-      const company = await this.companyService.getCompany(id)
+      await this.companyService.getCompany(id)
 
       // Call the companyService to delete the company with the retrieved ID.
       return this.companyService.deleteCompany(id)

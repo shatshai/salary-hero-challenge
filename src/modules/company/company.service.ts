@@ -4,6 +4,7 @@ import { isEmpty } from 'lodash'
 import { CompanyRepository } from '@app/modules/company/company.repository'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
+import { CompanyWithEmployees } from './types'
 
 @Injectable()
 export class CompanyService {
@@ -43,6 +44,30 @@ export class CompanyService {
     try {
       // Retrieve the company details from the repository based on the provided ID.
       const company = await this.companyRepository.getCompany({ id })
+
+      // If company is empty, throw a NotFoundException.
+      if (isEmpty(company)) {
+        throw new NotFoundException('Company not found')
+      }
+
+      return company
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`GetCompany error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Retrieves an company with the provided ID.
+   * @param id - The ID of the company to retrieve.
+   * @param companyOnly - The option to select company and company's employees
+   * @returns A Promise resolving to an company object.
+   */
+  async getCompanyWithEmployees(id: number): Promise<CompanyWithEmployees | NotFoundException> {
+    try {
+      // Retrieve the company details from the repository based on the provided ID.
+      const company = await this.companyRepository.getCompanyWithEmployees({ id })
 
       // If company is empty, throw a NotFoundException.
       if (isEmpty(company)) {

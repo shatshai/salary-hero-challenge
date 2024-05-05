@@ -7,6 +7,7 @@ import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
 import { Company } from '@prisma/client'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
+import { CompanyWithEmployees } from './types'
 
 describe('CompanyController', () => {
   let companyController: CompanyController
@@ -78,12 +79,15 @@ describe('CompanyController', () => {
   })
 
   describe('getCompany', () => {
-    it('Given found company- Should return company as expected', async () => {
-      const company = { id: 1, name: 'some company name', address: 'some company address' }
-      const spyRepository = jest.spyOn(companyRepository, 'getCompany').mockResolvedValue(company as unknown as Company)
-      expect(companyController.getCompany(1)).resolves.toEqual(
+    it('Given found company - Should return company as expected', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address', employees: [] }
+      const spyRepository = jest
+        .spyOn(companyRepository, 'getCompanyWithEmployees')
+        .mockResolvedValue(company as unknown as CompanyWithEmployees)
+      expect(companyController.getCompanyWithEmployees(1)).resolves.toEqual(
         expect.objectContaining({
           id: 1,
+          employees: [],
         }),
       )
       expect(spyRepository).toHaveBeenCalledWith(
@@ -94,8 +98,10 @@ describe('CompanyController', () => {
     })
 
     it('Given select result with null - Should throw not found exception', async () => {
-      const spyRepository = jest.spyOn(companyRepository, 'getCompany').mockResolvedValue(null as unknown as Company)
-      expect(companyController.getCompany(1)).rejects.toThrow('Company not found')
+      const spyRepository = jest
+        .spyOn(companyRepository, 'getCompanyWithEmployees')
+        .mockResolvedValue(null as unknown as CompanyWithEmployees)
+      expect(companyController.getCompanyWithEmployees(1)).rejects.toThrow('Company not found')
       expect(spyRepository).toHaveBeenCalledWith(
         expect.objectContaining({
           id: 1,
@@ -130,7 +136,7 @@ describe('CompanyController', () => {
       const company = { id: 1, name: 'some company name', address: 'some company address' }
       const spyRepositoryGetCompany = jest
         .spyOn(companyRepository, 'getCompany')
-        .mockResolvedValue(company as unknown as Company)
+        .mockResolvedValue(company as unknown as CompanyWithEmployees)
       const spyRepositoryUpdateCompany = jest
         .spyOn(companyRepository, 'updateCompany')
         .mockResolvedValue(company as unknown as Company)
