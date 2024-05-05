@@ -6,6 +6,7 @@ import { CompanyRepository } from './company.repository'
 import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
 import { Company } from '@prisma/client'
 import { CreateCompanyDto } from './dto/create-company.dto'
+import { UpdateCompanyDto } from './dto/update-company.dto'
 
 describe('CompanyController', () => {
   let companyController: CompanyController
@@ -121,6 +122,49 @@ describe('CompanyController', () => {
           id: 1,
         }),
       )
+    })
+  })
+
+  describe('updateCompany', () => {
+    it('Should update and return Company as expected', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepositoryGetCompany = jest
+        .spyOn(companyRepository, 'getCompany')
+        .mockResolvedValue(company as unknown as Company)
+      const spyRepositoryUpdateCompany = jest
+        .spyOn(companyRepository, 'updateCompany')
+        .mockResolvedValue(company as unknown as Company)
+      await expect(
+        companyController.updateCompany(company.id, plainToInstance(UpdateCompanyDto, company)),
+      ).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+          name: expect.any(String),
+          address: expect.any(String),
+        }),
+      )
+      expect(spyRepositoryGetCompany).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryUpdateCompany).toHaveBeenCalledWith(
+        1,
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+
+    it('Should throw NotFoundException when cannot get Company', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepositoryGetCompany = jest
+        .spyOn(companyRepository, 'getCompany')
+        .mockResolvedValue(null as unknown as Company)
+      const spyRepositoryUpdateCompany = jest
+        .spyOn(companyRepository, 'updateCompany')
+        .mockResolvedValue(company as unknown as Company)
+      await expect(
+        companyController.updateCompany(company.id, plainToInstance(UpdateCompanyDto, company)),
+      ).rejects.toThrow('Company not found')
+      expect(spyRepositoryGetCompany).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryUpdateCompany).not.toHaveBeenCalled()
     })
   })
 })

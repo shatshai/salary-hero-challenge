@@ -3,6 +3,7 @@ import { Company, Prisma } from '@prisma/client'
 import { isEmpty } from 'lodash'
 import { CompanyRepository } from '@app/modules/company/company.repository'
 import { CreateCompanyDto } from './dto/create-company.dto'
+import { UpdateCompanyDto } from './dto/update-company.dto'
 
 @Injectable()
 export class CompanyService {
@@ -66,11 +67,29 @@ export class CompanyService {
       // Call the companyRepository to create the company with the provided data.
       const company = await this.companyRepository.createCompany(data)
 
-      // Compute and return the salary rate for the created company.
       return company
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`CreateCompany error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Updates an company with the provided ID using the data from UpdatecompanyDto and computes their salary rate.
+   * @param id - The ID of the company to update.
+   * @param data - The data for updating the company.
+   * @returns A Promise resolving to an object containing the updated company's salary details.
+   */
+  async updateCompany(id: number, data: UpdateCompanyDto): Promise<Company> {
+    try {
+      // Call the companyRepository to update the company with the provided ID and data.
+      const company = await this.companyRepository.updateCompany(id, data)
+
+      return company
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`UpdateCompany error: ${error.message}`)
       throw error
     }
   }

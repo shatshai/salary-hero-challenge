@@ -46,4 +46,20 @@ export class CompanyRepository {
       data,
     })
   }
+
+  /**
+   * Updates an company with the provided ID using the given data.
+   * @param id - The ID of the company to update.
+   * @param data - The data for updating the company.
+   * @returns A Promise resolving to the updated company object.
+   */
+  updateCompany(id: number, data: Prisma.CompanyUpdateInput | Prisma.CompanyUncheckedUpdateInput): Promise<Company> {
+    // Use Prisma's update method to update the company with the provided data and ID.
+    return this.prisma.company.update({
+      data,
+      where: {
+        id,
+      },
+    })
+  }
 }

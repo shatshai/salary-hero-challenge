@@ -1,10 +1,11 @@
-import { Controller, Body, Get, NotFoundException, Logger, Param, Post, Query } from '@nestjs/common'
+import { Controller, Body, Get, NotFoundException, Logger, Param, Post, Put, Query } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { CompanyEntity } from './entities/company.entity'
+import { UpdateCompanyDto } from './dto/update-company.dto'
 
 @Controller('/company')
 export class CompanyController {
@@ -69,5 +70,31 @@ export class CompanyController {
   async createCompany(@Body() createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
     // Call the companyService to create the Company with the provided data.
     return this.companyService.createCompany(createCompanyDto)
+  }
+
+  @Put('/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'Company ID',
+    type: Number,
+  })
+  @ApiBody({
+    description: 'Company update details',
+    type: UpdateCompanyDto,
+  })
+  @ApiCreatedResponse({ type: CompanyEntity })
+  async updateCompany(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Body() updateCompanyDto: UpdateCompanyDto,
+  ): Promise<CompanyEntity> {
+    try {
+      await this.companyService.getCompany(id)
+
+      return this.companyService.updateCompany(id, updateCompanyDto)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`UpdateCompany error: ${error.message}`)
+      throw error
+    }
   }
 }
