@@ -1,5 +1,5 @@
 import { Controller, Body, Delete, Get, NotFoundException, Logger, Param, Post, Put, Query } from '@nestjs/common'
-import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
@@ -9,6 +9,7 @@ import { UpdateCompanyDto } from './dto/update-company.dto'
 import { CompanyWithEmployees } from './types'
 
 @Controller('/company')
+@ApiTags('Company')
 export class CompanyController {
   private readonly logger = new Logger(CompanyController.name)
   // Initialize company service

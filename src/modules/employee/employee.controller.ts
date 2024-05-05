@@ -1,5 +1,5 @@
 import { Controller, Body, Delete, Get, Logger, Param, Post, Put, Query, NotFoundException } from '@nestjs/common'
-import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { EmployeeService } from '@app/modules/employee/employee.service'
 import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/employee-with-salary-rate.entity'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
@@ -8,6 +8,7 @@ import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto
 import { CompanyService } from '../company/company.service'
 
 @Controller('/employee')
+@ApiTags('Employee')
 export class EmployeeController {
   private readonly logger = new Logger(EmployeeController.name)
 
