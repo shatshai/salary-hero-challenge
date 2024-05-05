@@ -9,8 +9,8 @@ async function bootstrap() {
 
   // Binding Swagger APIs documents
   const config = new DocumentBuilder()
-    .setTitle('Salary Hero challenge')
-    .setDescription('The employee salary API description')
+    .setTitle('Salary Backend APIs')
+    .setDescription('The employee salary and company backend APIs')
     .setVersion('1.0')
     .build()
   const document = SwaggerModule.createDocument(app, config)
