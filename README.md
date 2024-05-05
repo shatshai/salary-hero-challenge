@@ -95,6 +95,9 @@ docker-compose down
 ### Swagger Api Document
 - `GET /swagger`: List the APIs document.
 
+### Screen short
+![Alt text](screenshot/swagger.png?raw=true "Swagger Backend APIs")
+
 ## Libraries
 
 - **@nestjs/swagger**: A library that integrates Swagger (OpenAPI) with NestJS, allowing for automatic API documentation generation and interactive API exploration.
