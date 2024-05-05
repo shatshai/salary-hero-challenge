@@ -11,3 +11,20 @@ services:
       MYSQL_PASSWORD: hero
     volumes:
       - ./docker/mysql-init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  salary-backend-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development # comment to test production image
+    command: ["node", "dist/main"]
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+    depends_on:
+      - mysql-db
+    links:
+      - mysql-db
