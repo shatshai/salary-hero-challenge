@@ -46,6 +46,13 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
+## Libraries
+
+- **@nestjs/swagger**: A library that integrates Swagger (OpenAPI) with NestJS, allowing for automatic API documentation generation and interactive API exploration.
+- **Helmet**: Middleware for securing NestJS applications by setting HTTP headers for enhanced security, including protection against common web vulnerabilities.
+- **@prisma/client**: Prisma's official client for interacting with your database, providing a type-safe and auto-generated query builder for efficient database operations.
+- **prisma**: Prisma's CLI tool for managing database migrations, generating Prisma client code, and performing various database-related tasks seamlessly.
+
 ## Database Schema
 
 | Table Name    | Columns                         | Relationships                                 |
