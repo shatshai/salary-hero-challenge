@@ -81,7 +81,7 @@ describe('EmployeeController', () => {
   })
 
   describe('getEmployee', () => {
-    it('Given found employee - Should return employees as expected', async () => {
+    it('Given found employee - Should return employee as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployee')
@@ -112,7 +112,7 @@ describe('EmployeeController', () => {
   })
 
   describe('createEmployee', () => {
-    it('Should create and return employees as expected', async () => {
+    it('Should create and return employee as expected', async () => {
       const employeeData = { salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepository = jest
@@ -135,7 +135,7 @@ describe('EmployeeController', () => {
   })
 
   describe('updateEmployee', () => {
-    it('Should update and return employees as expected', async () => {
+    it('Should update and return employee as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepositoryGetEmployee = jest
         .spyOn(employeeRepository, 'getEmployee')
@@ -177,7 +177,7 @@ describe('EmployeeController', () => {
   })
 
   describe('deleteEmployee', () => {
-    it('Should delete and return employees as expected', async () => {
+    it('Should delete and return employee as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepositoryGetEmployee = jest
         .spyOn(employeeRepository, 'getEmployee')
