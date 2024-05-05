@@ -20,4 +20,18 @@ export class CompanyRepository {
       where: companyWhereInput,
     })
   }
+
+  /**
+   * Retrieves an company details based on the provided unique input.
+   * @param companyWhereUniqueInput - The unique input identifying the company.
+   * @returns A Promise resolving to an Company object or null if not found.
+   */
+  getCompany(companyWhereUniqueInput: Prisma.CompanyWhereUniqueInput): Promise<Company | null> {
+    // Retrieve the company details from the database.
+    return this.prisma.company.findUnique<{
+      where: Prisma.CompanyWhereUniqueInput
+    }>({
+      where: companyWhereUniqueInput,
+    })
+  }
 }

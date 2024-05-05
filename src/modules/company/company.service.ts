@@ -31,4 +31,27 @@ export class CompanyService {
       throw error
     }
   }
+
+  /**
+   * Retrieves an company with the provided ID.
+   * @param id - The ID of the company to retrieve.
+   * @returns A Promise resolving to an company object.
+   */
+  async getCompany(id: number): Promise<Company | NotFoundException> {
+    try {
+      // Retrieve the company details from the repository based on the provided ID.
+      const company = await this.companyRepository.getCompany({ id })
+
+      // If company is empty, throw a NotFoundException.
+      if (isEmpty(company)) {
+        throw new NotFoundException('Company not found')
+      }
+
+      return company
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`GetCompany error: ${error.message}`)
+      throw error
+    }
+  }
 }

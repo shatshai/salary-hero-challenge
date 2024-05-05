@@ -1,7 +1,8 @@
-import { Controller, Get, NotFoundException, Logger, Query } from '@nestjs/common'
-import { ApiQuery } from '@nestjs/swagger'
+import { Controller, Get, NotFoundException, Logger, Param, Query } from '@nestjs/common'
+import { ApiParam, ApiQuery } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
+import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 
 @Controller('/company')
 export class CompanyController {
@@ -34,5 +35,21 @@ export class CompanyController {
       name,
       id,
     })
+  }
+
+  /**
+   * Endpoint to retrieve an company by ID.
+   * @param id - The ID of the company to retrieve.
+   * @returns A Promise resolving to a object representing the company.
+   */
+  @Get('/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'Company ID',
+    type: Number,
+  })
+  async getCompany(@Param('id', new ParseIntPipe()) id: number): Promise<Company | NotFoundException> {
+    // Call the companyService to retrieve the company by ID.
+    return this.companyService.getCompany(id)
   }
 }

@@ -73,4 +73,31 @@ describe('CompanyController', () => {
       )
     })
   })
+
+  describe('getCompany', () => {
+    it('Given found company- Should return company as expected', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepository = jest.spyOn(companyRepository, 'getCompany').mockResolvedValue(company as unknown as Company)
+      expect(companyController.getCompany(1)).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+      expect(spyRepository).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+
+    it('Given select result with null - Should throw not found exception', async () => {
+      const spyRepository = jest.spyOn(companyRepository, 'getCompany').mockResolvedValue(null as unknown as Company)
+      expect(companyController.getCompany(1)).rejects.toThrow('Company not found')
+      expect(spyRepository).toHaveBeenCalledWith(
+        expect.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+  })
 })
