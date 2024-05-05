@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common'
 import { HttpAdapterHost, NestFactory } from '@nestjs/core'
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger'
 import helmet from 'helmet'
@@ -7,6 +8,7 @@ import { HttpExceptionFilter } from '@app/common/filters/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.useGlobalPipes(new ValidationPipe())
 
   // Binding Swagger APIs documents
   const config = new DocumentBuilder()
@@ -18,27 +20,29 @@ async function bootstrap() {
   SwaggerModule.setup('swagger', app, document)
 
   // Add Helmet middleware with desired options
-  app.use(helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        styleSrc: ["'self'"],
-        // Add more directives as needed
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'", "'unsafe-inline'"],
+          styleSrc: ["'self'"],
+          // Add more directives as needed
+        },
       },
-    },
-    frameguard: {
-      action: 'deny',
-    },
-    hsts: {
-      maxAge: 31536000, // 1 year in seconds
-      includeSubDomains: true,
-      preload: true,
-    },
-    hidePoweredBy: true,
-    referrerPolicy: { policy: 'same-origin' },
-    xssFilter: true,
-  }));
+      frameguard: {
+        action: 'deny',
+      },
+      hsts: {
+        maxAge: 31536000, // 1 year in seconds
+        includeSubDomains: true,
+        preload: true,
+      },
+      hidePoweredBy: true,
+      referrerPolicy: { policy: 'same-origin' },
+      xssFilter: true,
+    }),
+  )
 
   // Apply the exception filter
   const { httpAdapter } = app.get(HttpAdapterHost)
