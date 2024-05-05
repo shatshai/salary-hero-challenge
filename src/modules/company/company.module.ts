@@ -8,5 +8,6 @@ import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
   imports: [PrismaModule], // Import the PrismaModule for database access
   controllers: [CompanyController],
   providers: [CompanyService, CompanyRepository],
+  exports: [CompanyService], // Export CompanyService for dependency injection in other modules
 })
 export class CompanyModule {}

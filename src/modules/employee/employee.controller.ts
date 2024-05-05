@@ -5,13 +5,17 @@ import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/emp
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
 import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto'
+import { CompanyService } from '../company/company.service'
 
 @Controller('/employee')
 export class EmployeeController {
   private readonly logger = new Logger(EmployeeController.name)
 
   // Initialize employee service
-  constructor(private readonly employeeService: EmployeeService) {}
+  constructor(
+    private readonly employeeService: EmployeeService,
+    private readonly companyService: CompanyService,
+  ) {}
 
   /**
    * Endpoint to retrieve an employees with filter by company id or employee email
@@ -71,6 +75,9 @@ export class EmployeeController {
   })
   @ApiCreatedResponse({ type: EmployeeWithSalaryRateEntity })
   async createEmployee(@Body() createEmployeeDto: CreateEmployeeDto): Promise<EmployeeWithSalaryRateEntity> {
+    // Call the companyService to validate company is exists.
+    await this.companyService.getCompany(createEmployeeDto.companyId)
+
     // Call the employeeService to create the employee with the provided data.
     return this.employeeService.createEmployee(createEmployeeDto)
   }
