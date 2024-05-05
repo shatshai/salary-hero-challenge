@@ -46,15 +46,53 @@ $ yarn run test:e2e
 $ yarn run test:cov
 ```
 
-## Support
+## Database Schema
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+| Table Name    | Columns                         | Relationships                                 |
+|---------------|---------------------------------|-----------------------------------------------|
+| SalaryType    | id, type, description           | One-to-Many with Employee                     |
+| Company       | id, name, address               | One-to-Many with Employee                     |
+| Employee      | id, username, email, companyId,  | Many-to-One with Company                      |
+|               | salary, salaryTypeId, payDate   | Many-to-One with SalaryType                   |
 
-## Stay in touch
+1. SalaryType Table:
+  * Columns:
+    * id: Integer, Primary Key, Autoincrement
+    * type: String
+    * description: String
+  * Relationships:
+    * One-to-Many with Employee table (employees field)
+2. Company Table:
+  * Columns:
+    * id: Integer, Primary Key, Autoincrement
+    * name: String
+    * address: String
+  * Relationships:
+    * One-to-Many with Employee table (employees field)
+3. Employee Table:
+  * Columns:
+    * id: Integer, Primary Key, Autoincrement
+    * username: String
+    * email: String
+    * companyId: Integer, Foreign Key (company_id), References Company(id)
+    * salary: Float
+    * salaryTypeId: Integer, Foreign Key (salary_type_id), References SalaryType(id)
+    * payDate: Integer, Default 1 (map to pay_date)
+  * Relationships:
+    * Many-to-One with Company table (company field)
+    * Many-to-One with SalaryType table (salaryType field)
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+## Database Schema Description
+* SalaryType Table:
+  * Represents different types of salary structures.
+  * Contains fields for id, type (e.g., hourly, monthly), and description.
+* Company Table:
+  * Stores information about companies.
+  * Includes fields for id, name, and address.
+* Employee Table:
+  * Holds details about employees.
+  * Includes fields for id, username, email, salary, payDate (defaulted to 1), and foreign keys for companyId and salaryTypeId.
+  * Establishes relationships with Company (many employees belong to one company) and SalaryType (each employee has a salary type).
 
 ## License
 
