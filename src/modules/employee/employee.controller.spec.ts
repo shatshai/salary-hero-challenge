@@ -138,8 +138,8 @@ describe('EmployeeController', () => {
     it('Should update and return employees as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepositoryGetEmployee = jest
-      .spyOn(employeeRepository, 'getEmployee')
-      .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
       const spyRepositoryUpdateEmployee = jest
         .spyOn(employeeRepository, 'updateEmployee')
         .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
@@ -151,7 +151,7 @@ describe('EmployeeController', () => {
           salaryRate: expect.any(Number),
         }),
       )
-      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({id: 1})
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({ id: 1 })
       expect(spyRepositoryUpdateEmployee).toHaveBeenCalledWith(
         1,
         expect.objectContaining({
@@ -159,10 +159,25 @@ describe('EmployeeController', () => {
         }),
       )
     })
+
+    it('Should throw NotFoundException when cannot get employee', async () => {
+      const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const spyRepositoryGetEmployee = jest
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(null as unknown as EmployeeWithCompanyWithSalaryType)
+      const spyRepositoryUpdateEmployee = jest
+        .spyOn(employeeRepository, 'updateEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      await expect(
+        employeeController.updateEmployee(employee.id, plainToInstance(UpdateEmployeeDto, employee)),
+      ).rejects.toThrow('Employee not found')
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryUpdateEmployee).not.toHaveBeenCalled()
+    })
   })
 
   describe('deleteEmployee', () => {
-    it('Should update and return employees as expected', async () => {
+    it('Should delete and return employees as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
       const spyRepositoryGetEmployee = jest
         .spyOn(employeeRepository, 'getEmployee')
@@ -176,8 +191,21 @@ describe('EmployeeController', () => {
           salaryRate: expect.any(Number),
         }),
       )
-      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({id: 1})
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({ id: 1 })
       expect(spyRepositoryDelete).toHaveBeenCalledWith(1)
+    })
+
+    it('Should throw NotFoundException when cannot get employee', async () => {
+      const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const spyRepositoryGetEmployee = jest
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(null as unknown as EmployeeWithCompanyWithSalaryType)
+      const spyRepositoryDelete = jest
+        .spyOn(employeeRepository, 'deleteEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      await expect(employeeController.deleteEmployee(employee.id)).rejects.toThrow('Employee not found')
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryDelete).not.toHaveBeenCalled()
     })
   })
 })
