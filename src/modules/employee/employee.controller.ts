@@ -34,7 +34,7 @@ export class EmployeeController {
   })
   async getEmployees(
     @Query('email') email: string,
-    @Query('companyId') companyId: number,
+    @Query('companyId', new ParseIntPipe()) companyId: number,
   ): Promise<EmployeeWithSalaryRateEntity[] | NotFoundException> {
     // Call the employeeService to retrieve the employees with filter by company id or employee email
     return this.employeeService.getEmployees({

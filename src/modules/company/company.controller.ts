@@ -33,7 +33,7 @@ export class CompanyController {
     required: false,
     type: Number,
   })
-  async getCompanies(@Query('id') id: number, @Query('name') name: string): Promise<Company[] | NotFoundException> {
+  async getCompanies(@Query('id', new ParseIntPipe()) id: number, @Query('name') name: string): Promise<Company[] | NotFoundException> {
     // Call the companyService to retrieve the companies with filter by company id or company name
     return this.companyService.getCompanies({
       name,
