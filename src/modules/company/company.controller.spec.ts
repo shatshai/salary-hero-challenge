@@ -167,4 +167,38 @@ describe('CompanyController', () => {
       expect(spyRepositoryUpdateCompany).not.toHaveBeenCalled()
     })
   })
+
+  describe('deleteCompany', () => {
+    it('Should delete and return company as expected', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepositoryGetCompany = jest
+        .spyOn(companyRepository, 'getCompany')
+        .mockResolvedValue(company as unknown as Company)
+      const spyRepositoryDelete = jest
+        .spyOn(companyRepository, 'deleteCompany')
+        .mockResolvedValue(company as unknown as Company)
+      await expect(companyController.deleteCompany(company.id)).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+          name: expect.any(String),
+          address: expect.any(String),
+        }),
+      )
+      expect(spyRepositoryGetCompany).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryDelete).toHaveBeenCalledWith(1)
+    })
+
+    it('Should throw NotFoundException when cannot get company', async () => {
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepositoryGetCompany = jest
+        .spyOn(companyRepository, 'getCompany')
+        .mockResolvedValue(null as unknown as Company)
+      const spyRepositoryDelete = jest
+        .spyOn(companyRepository, 'deleteCompany')
+        .mockResolvedValue(company as unknown as Company)
+      await expect(companyController.deleteCompany(company.id)).rejects.toThrow('Company not found')
+      expect(spyRepositoryGetCompany).toHaveBeenCalledWith({ id: 1 })
+      expect(spyRepositoryDelete).not.toHaveBeenCalled()
+    })
+  })
 })

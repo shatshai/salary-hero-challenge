@@ -93,4 +93,22 @@ export class CompanyService {
       throw error
     }
   }
+
+  /**
+   * Deletes an company with the provided ID and computes their salary rate.
+   * @param id - The ID of the company to delete.
+   * @returns A Promise resolving to an object containing the deleted company's salary details.
+   */
+  async deleteCompany(id: number): Promise<Company> {
+    try {
+      // Call the companyRepository to delete the company with the provided ID.
+      const company = await this.companyRepository.deleteCompany(id)
+
+      return company
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`DeleteCompany error: ${error.message}`)
+      throw error
+    }
+  }
 }

@@ -62,4 +62,18 @@ export class CompanyRepository {
       },
     })
   }
+
+  /**
+   * Deletes an company with the provided ID.
+   * @param id - The ID of the company to delete.
+   * @returns A Promise resolving to the deleted company object.
+   */
+  deleteCompany(id: number): Promise<Company> {
+    // Use Prisma's delete method to delete the company with the provided ID.
+    return this.prisma.company.delete({
+      where: {
+        id,
+      },
+    })
+  }
 }

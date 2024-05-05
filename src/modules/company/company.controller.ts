@@ -1,4 +1,4 @@
-import { Controller, Body, Get, NotFoundException, Logger, Param, Post, Put, Query } from '@nestjs/common'
+import { Controller, Body, Delete, Get, NotFoundException, Logger, Param, Post, Put, Query } from '@nestjs/common'
 import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
@@ -94,6 +94,32 @@ export class CompanyController {
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`UpdateCompany error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Endpoint to delete an company by ID.
+   * @param id - The ID of the company to delete.
+   * @returns A Promise resolving to an object representing the deleted company with salary details.
+   */
+  @Delete('/:id')
+  @ApiParam({
+    name: 'id',
+    description: 'Company ID',
+    type: Number,
+  })
+  @ApiCreatedResponse({ type: CompanyEntity})
+  async deleteCompany(@Param('id', new ParseIntPipe()) id: number): Promise<CompanyEntity> {
+    try {
+      // Retrieve the company details based on the provided ID.
+      const company = await this.companyService.getCompany(id)
+
+      // Call the companyService to delete the company with the retrieved ID.
+      return this.companyService.deleteCompany(id)
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`DeleteCompany error: ${error.message}`)
       throw error
     }
   }
