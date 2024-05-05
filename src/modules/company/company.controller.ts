@@ -1,8 +1,10 @@
-import { Controller, Get, NotFoundException, Logger, Param, Query } from '@nestjs/common'
-import { ApiParam, ApiQuery } from '@nestjs/swagger'
+import { Controller, Body, Get, NotFoundException, Logger, Param, Post, Query } from '@nestjs/common'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
+import { CreateCompanyDto } from './dto/create-company.dto'
+import { CompanyEntity } from './entities/company.entity'
 
 @Controller('/company')
 export class CompanyController {
@@ -51,5 +53,21 @@ export class CompanyController {
   async getCompany(@Param('id', new ParseIntPipe()) id: number): Promise<Company | NotFoundException> {
     // Call the companyService to retrieve the company by ID.
     return this.companyService.getCompany(id)
+  }
+
+  /**
+   * Endpoint to create a new company.
+   * @param CreateCompanyDto - The data for creating the company.
+   * @returns A Promise resolving to an object representing the created company with details.
+   */
+  @Post()
+  @ApiBody({
+    description: 'Company create details',
+    type: CreateCompanyDto,
+  })
+  @ApiCreatedResponse({ type: CompanyEntity })
+  async createCompany(@Body() createCompanyDto: CreateCompanyDto): Promise<CompanyEntity> {
+    // Call the companyService to create the Company with the provided data.
+    return this.companyService.createCompany(createCompanyDto)
   }
 }

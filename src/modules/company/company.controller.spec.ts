@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing'
+import { plainToInstance } from 'class-transformer'
 import { CompanyController } from './company.controller'
 import { CompanyService } from './company.service'
 import { CompanyRepository } from './company.repository'
 import { PrismaModule } from '@app/infrastructure/prisma/prisma.module'
 import { Company } from '@prisma/client'
+import { CreateCompanyDto } from './dto/create-company.dto'
 
 describe('CompanyController', () => {
   let companyController: CompanyController
@@ -95,6 +97,27 @@ describe('CompanyController', () => {
       expect(companyController.getCompany(1)).rejects.toThrow('Company not found')
       expect(spyRepository).toHaveBeenCalledWith(
         expect.objectContaining({
+          id: 1,
+        }),
+      )
+    })
+  })
+
+  describe('createCompany', () => {
+    it('Should create and return company as expected', async () => {
+      const companyData = { name: 'some company name', address: 'some company address' }
+      const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const spyRepository = jest
+        .spyOn(companyRepository, 'createCompany')
+        .mockResolvedValue(company as unknown as Company)
+      await expect(companyController.createCompany(plainToInstance(CreateCompanyDto, companyData))).resolves.toEqual(
+        expect.objectContaining({
+          id: 1,
+          name: 'some company name',
+        }),
+      )
+      expect(spyRepository).toHaveBeenCalledWith(
+        expect.not.objectContaining({
           id: 1,
         }),
       )

@@ -34,4 +34,16 @@ export class CompanyRepository {
       where: companyWhereUniqueInput,
     })
   }
+
+  /**
+   * Creates a new company with the provided data.
+   * @param data - The data for creating the company.
+   * @returns A Promise resolving to the created company object.
+   */
+  async createCompany(data: Prisma.CompanyCreateInput | Prisma.CompanyUncheckedCreateInput): Promise<Company> {
+    // Use Prisma's create method to create a new company with the provided data.
+    return this.prisma.company.create({
+      data,
+    })
+  }
 }

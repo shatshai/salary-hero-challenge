@@ -2,6 +2,7 @@ import { Logger, Injectable, NotFoundException } from '@nestjs/common'
 import { Company, Prisma } from '@prisma/client'
 import { isEmpty } from 'lodash'
 import { CompanyRepository } from '@app/modules/company/company.repository'
+import { CreateCompanyDto } from './dto/create-company.dto'
 
 @Injectable()
 export class CompanyService {
@@ -51,6 +52,25 @@ export class CompanyService {
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
       this.logger.error(`GetCompany error: ${error.message}`)
+      throw error
+    }
+  }
+
+  /**
+   * Creates a new company with the provided data and computes their salary rate.
+   * @param data - The data for creating the company.
+   * @returns A Promise resolving to an object containing the created company details.
+   */
+  async createCompany(data: CreateCompanyDto): Promise<Company | null> {
+    try {
+      // Call the companyRepository to create the company with the provided data.
+      const company = await this.companyRepository.createCompany(data)
+
+      // Compute and return the salary rate for the created company.
+      return company
+    } catch (error) {
+      // Log the error and rethrow it to the exception filter.
+      this.logger.error(`CreateCompany error: ${error.message}`)
       throw error
     }
   }
