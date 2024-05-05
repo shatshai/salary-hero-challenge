@@ -58,7 +58,7 @@ export class EmployeeService {
       return computeSalaryRate(employee)
     } catch (error) {
       // Log the error and rethrow it to the exception filter.
-      this.logger.error(`GetEmployees error: ${error.message}`)
+      this.logger.error(`GetEmployee error: ${error.message}`)
       throw error
     }
   }
