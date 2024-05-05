@@ -137,7 +137,10 @@ describe('EmployeeController', () => {
   describe('updateEmployee', () => {
     it('Should update and return employees as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
-      const spyRepository = jest
+      const spyRepositoryGetEmployee = jest
+      .spyOn(employeeRepository, 'getEmployee')
+      .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      const spyRepositoryUpdateEmployee = jest
         .spyOn(employeeRepository, 'updateEmployee')
         .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
       await expect(
@@ -148,7 +151,8 @@ describe('EmployeeController', () => {
           salaryRate: expect.any(Number),
         }),
       )
-      expect(spyRepository).toHaveBeenCalledWith(
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({id: 1})
+      expect(spyRepositoryUpdateEmployee).toHaveBeenCalledWith(
         1,
         expect.objectContaining({
           id: 1,
@@ -160,7 +164,10 @@ describe('EmployeeController', () => {
   describe('deleteEmployee', () => {
     it('Should update and return employees as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
-      const spyRepository = jest
+      const spyRepositoryGetEmployee = jest
+        .spyOn(employeeRepository, 'getEmployee')
+        .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
+      const spyRepositoryDelete = jest
         .spyOn(employeeRepository, 'deleteEmployee')
         .mockResolvedValue(employee as unknown as EmployeeWithCompanyWithSalaryType)
       await expect(employeeController.deleteEmployee(employee.id)).resolves.toEqual(
@@ -169,7 +176,8 @@ describe('EmployeeController', () => {
           salaryRate: expect.any(Number),
         }),
       )
-      expect(spyRepository).toHaveBeenCalledWith(1)
+      expect(spyRepositoryGetEmployee).toHaveBeenCalledWith({id: 1})
+      expect(spyRepositoryDelete).toHaveBeenCalledWith(1)
     })
   })
 })
