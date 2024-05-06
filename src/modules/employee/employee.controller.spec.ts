@@ -11,6 +11,7 @@ import { SalaryTypes } from '@app/config/constants'
 import { CreateEmployeeDto } from './dto/create-employee.dto'
 import { UpdateEmployeeDto } from './dto/update-employee.dto'
 import { EmployeeWithCompanyWithSalaryType } from './types'
+import { SearchEmployeeDto } from './dto/search-employee.dto'
 
 describe('EmployeeController', () => {
   let employeeController: EmployeeController
@@ -41,48 +42,36 @@ describe('EmployeeController', () => {
   describe('getEmployees', () => {
     it('Given found employees - Should return employees as expected', async () => {
       const employee = { id: 1, salaryTypeId: SalaryTypes.DAILY, salary: 700 }
+      const searchEmployeeDto = plainToInstance(SearchEmployeeDto, {})
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployees')
         .mockResolvedValue([employee] as unknown as EmployeeWithCompanyWithSalaryType[])
-      expect(employeeController.getEmployees(null, null)).resolves.toEqual(
+      expect(employeeController.getEmployees(searchEmployeeDto)).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             id: 1,
           }),
         ]),
       )
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          companyId: null,
-          email: null,
-        }),
-      )
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
 
     it('Given select result with empty array - Should throw not found exception', async () => {
+      const searchEmployeeDto = plainToInstance(SearchEmployeeDto, {})
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployees')
         .mockResolvedValue([] as unknown as EmployeeWithCompanyWithSalaryType[])
-      expect(employeeController.getEmployees(null, null)).rejects.toThrow('Employees not found')
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          companyId: null,
-          email: null,
-        }),
-      )
+      expect(employeeController.getEmployees(searchEmployeeDto)).rejects.toThrow('Employees not found')
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
 
     it('Given select result with null - Should throw not found exception', async () => {
+      const searchEmployeeDto = plainToInstance(SearchEmployeeDto, {})
       const spyRepository = jest
         .spyOn(employeeRepository, 'getEmployees')
         .mockResolvedValue(null as unknown as EmployeeWithCompanyWithSalaryType[])
-      expect(employeeController.getEmployees(null, null)).rejects.toThrow('Employees not found')
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          companyId: null,
-          email: null,
-        }),
-      )
+      expect(employeeController.getEmployees(searchEmployeeDto)).rejects.toThrow('Employees not found')
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
   })
 

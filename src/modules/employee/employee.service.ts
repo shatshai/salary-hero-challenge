@@ -1,11 +1,12 @@
 import { Logger, Injectable, NotFoundException } from '@nestjs/common'
-import { Employee, Prisma } from '@prisma/client'
+import { Employee } from '@prisma/client'
 import { isEmpty } from 'lodash'
 import { EmployeeRepository } from '@app/modules/employee/employee.repository'
 import { computeSalaryRate } from '@app/common/utils/salary.utils'
 import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from './types'
 import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
 import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto'
+import { SearchEmployeeDto } from './dto/search-employee.dto'
 
 @Injectable()
 export class EmployeeService {
@@ -16,15 +17,15 @@ export class EmployeeService {
 
   /**
    * Retrieves employees based on the provided criteria and computes their salary rates.
-   * @param employeeWhereInput The criteria for filtering employees.
+   * @param searchEmployeeDto The criteria for filtering employees.
    * @returns A promise resolving to an array of employees with computed salary rates, or null if no employees match the criteria.
    */
   async getEmployees(
-    employeeWhereInput: Prisma.EmployeeWhereInput,
+    searchEmployeeDto: SearchEmployeeDto,
   ): Promise<WithSalaryRate<Employee>[] | WithSalaryRate<EmployeeWithCompanyWithSalaryType>[] | NotFoundException> {
     try {
       // Retrieve employees from the repository based on the input criteria
-      const employees = await this.employeeRepository.getEmployees(employeeWhereInput)
+      const employees = await this.employeeRepository.getEmployees(searchEmployeeDto)
 
       if (isEmpty(employees)) {
         throw new NotFoundException('Employees not found')

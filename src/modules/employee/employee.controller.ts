@@ -1,9 +1,10 @@
 import { Controller, Body, Delete, Get, Logger, Param, Post, Put, Query, NotFoundException } from '@nestjs/common'
-import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { EmployeeService } from '@app/modules/employee/employee.service'
 import { EmployeeWithSalaryRateEntity } from '@app/modules/employee/entities/employee-with-salary-rate.entity'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateEmployeeDto } from '@app/modules/employee/dto/create-employee.dto'
+import { SearchEmployeeDto } from '@app/modules/employee/dto/search-employee.dto'
 import { UpdateEmployeeDto } from '@app/modules/employee/dto/update-employee.dto'
 import { CompanyService } from '../company/company.service'
 
@@ -25,27 +26,11 @@ export class EmployeeController {
    * @returns A Promise resolving to an array of object representing the employees with salary details.
    */
   @Get()
-  @ApiQuery({
-    name: 'email',
-    description: 'Employee Email',
-    required: false,
-    type: String,
-  })
-  @ApiQuery({
-    name: 'companyId',
-    description: 'Company ID',
-    required: false,
-    type: Number,
-  })
   async getEmployees(
-    @Query('email') email: string,
-    @Query('companyId', new ParseIntPipe()) companyId: number,
+    @Query() searchEmployeeDto: SearchEmployeeDto,
   ): Promise<EmployeeWithSalaryRateEntity[] | NotFoundException> {
     // Call the employeeService to retrieve the employees with filter by company id or employee email
-    return this.employeeService.getEmployees({
-      email,
-      companyId,
-    })
+    return this.employeeService.getEmployees(searchEmployeeDto)
   }
 
   /**
