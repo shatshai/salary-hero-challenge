@@ -1,8 +1,15 @@
 import * as dayjs from 'dayjs'
 import { BadRequestException } from '@nestjs/common'
-import { SalaryTypes, INCLUDE_PAYMENT_DATE } from '@app/config/constants'
+import { SalaryTypes, SalaryTypesDescription, INCLUDE_PAYMENT_DATE } from '@app/config/constants'
 import { Employee } from '@prisma/client'
 import { EmployeeWithCompanyWithSalaryType, WithSalaryRate } from '@app/modules/employee/types'
+
+export function salaryTypeDescription(employee: Employee | EmployeeWithCompanyWithSalaryType) {
+  return {
+    id: employee.salaryTypeId,
+    description: SalaryTypesDescription[employee.salaryTypeId],
+  }
+}
 
 /**
  * Computes the salary rate for an employee based on their salary type (monthly or daily).
@@ -44,6 +51,7 @@ export function computeSalaryRate(
   // Return the employee data with the calculated salary rate
   return {
     ...employee,
+    salaryType: salaryTypeDescription(employee),
     salaryRate: parseFloat(salaryRate.toFixed(2)), // Round salary rate to 2 decimal places
   }
 }

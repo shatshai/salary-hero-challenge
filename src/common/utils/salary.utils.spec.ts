@@ -1,5 +1,5 @@
 import { computeSalaryRate } from './salary.utils'
-import { SalaryTypes } from '@app/config/constants'
+import { SalaryTypes, SalaryTypesDescription } from '@app/config/constants'
 import { EmployeeWithCompanyWithSalaryType } from '@app/modules/employee/types'
 
 describe('salary.utils', () => {
@@ -87,15 +87,17 @@ describe('salary.utils', () => {
     ]
     test.each(cases)(
       'Given employee %p and today date is %p as arguments. Should return salary rate as %p',
-      (employee, todayDate, expected) => {
+      (employee: EmployeeWithCompanyWithSalaryType, todayDate: string, expected: number) => {
         // Mock the current date for testing
         jest.useFakeTimers().setSystemTime(new Date(todayDate as string))
 
         // Calculate salary rate for the employee
-        const { salaryRate } = computeSalaryRate(employee as unknown as EmployeeWithCompanyWithSalaryType)
+        const { salaryRate, salaryType} = computeSalaryRate(employee)
 
         // Check if the calculated salary rate matches the expected value
         expect(salaryRate).toEqual(expected)
+        // Validate salaryType description
+        expect(salaryType.description).toEqual(SalaryTypesDescription[employee.salaryTypeId])
       },
     )
 
