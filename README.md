@@ -22,6 +22,12 @@ $ yarn install
 
 ## Running the app
 
+Start MySQL docker fist
+
+```bash
+docker-compose up -d mysql-db
+```
+
 ```bash
 # development
 $ yarn run start
@@ -58,6 +64,7 @@ cd salary-backend-api
 
 2. Build and start the Docker containers
 ```bash
+docker-compose up -d mysql-db # Make sure MySQL is running
 docker-compose up -d --build
 ```
 
