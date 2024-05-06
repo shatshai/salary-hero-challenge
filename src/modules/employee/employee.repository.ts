@@ -20,12 +20,10 @@ export class EmployeeRepository {
       where: Prisma.EmployeeWhereInput
       include: {
         company: true
-        salaryType: true
       }
     }>({
       include: {
         company: true,
-        salaryType: true,
       },
       where: employeeWhereInput,
     })
@@ -42,12 +40,10 @@ export class EmployeeRepository {
       where: Prisma.EmployeeWhereUniqueInput
       include: {
         company: true
-        salaryType: true
       }
     }>({
       include: {
         company: true,
-        salaryType: true,
       },
       where: employeeWhereUniqueInput,
     })

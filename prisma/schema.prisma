@@ -13,14 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model SalaryType {
-  id          Int    @id @default(autoincrement())
-  type        String
-  description String
-  employeeies Employee[]
-  @@map("salary_type")
-}
-
 model Company {
   id      Int    @id @default(autoincrement())
   name    String
@@ -37,7 +29,6 @@ model Employee {
   company   Company @relation(fields: [companyId], references: [id])
   salary    Float
   salaryTypeId Int  @map("salary_type_id")
-  salaryType SalaryType @relation(fields: [salaryTypeId], references: [id])
   payDate   Int     @map("pay_date")  @default(1)
   @@map("employee")
 }

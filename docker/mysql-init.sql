@@ -2,15 +2,6 @@
 CREATE DATABASE IF NOT EXISTS salary_hero;
 USE salary_hero;
 
--- Create table
-DROP TABLE IF EXISTS salary_type;
-CREATE TABLE IF NOT EXISTS salary_type (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  type VARCHAR(50) NOT NULL,
-  description VARCHAR(50) NULL,
-  UNIQUE KEY type (type)
-);
-
 DROP TABLE IF EXISTS company;
 CREATE TABLE IF NOT EXISTS company (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -33,17 +24,13 @@ CREATE TABLE IF NOT EXISTS employee (
   KEY idx_company (company_id)
 );
 
--- Insert initial data
-INSERT INTO salary_type (type, description) VALUES ('daily', 'Daily rate');
-INSERT INTO salary_type (type, description) VALUES ('monthly', 'Monthly rate');
-INSERT INTO salary_type (type, description) VALUES ('monthtodate', 'Monthly rate with payment date');
-
 INSERT INTO company (name, address) VALUES ('company name1', '123 Silom Rd.');
 INSERT INTO company (name, address) VALUES ('company name2', '456 Rama 9 Rd.');
 
-SET @salary_type1 := (SELECT id FROM salary_type WHERE type = 'daily');
-SET @salary_type2 := (SELECT id FROM salary_type WHERE type = 'monthly');
-SET @salary_type3 := (SELECT id FROM salary_type WHERE type = 'monthtodate');
+-- map from salary types enum
+SET @salary_type1 := 1; -- Daily rate
+SET @salary_type2 := 2; -- Monthly rate
+SET @salary_type3 := 3; -- Monthly rate
 
 SET @company1 := (SELECT id FROM company WHERE name = 'company name1');
 SET @company2 := (SELECT id FROM company WHERE name = 'company name2');

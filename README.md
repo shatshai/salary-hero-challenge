@@ -8,11 +8,11 @@ The API calculates salary rates based on monthly and daily rates. It considers t
 
 ## Technologies Used
 
-* [Nest Framework](https://github.com/nestjs/nest)
-* TypeScript
-* MySQL
-* [Prisma](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-node-mysql)
-* Docker
+  * [Nest Framework](https://github.com/nestjs/nest)
+  * TypeScript
+  * MySQL
+  * [Prisma](https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases-node-mysql)
+  * Docker
 
 ## Installation
 
@@ -106,26 +106,18 @@ docker-compose down
 
 | Table Name    | Columns                         | Relationships                                 |
 |---------------|---------------------------------|-----------------------------------------------|
-| SalaryType    | id, type, description           | One-to-Many with Employee                     |
 | Company       | id, name, address               | One-to-Many with Employee                     |
 | Employee      | id, username, email, companyId,  | Many-to-One with Company                      |
-|               | salary, salaryTypeId, payDate   | Many-to-One with SalaryType                   |
+|               | salary, salaryTypeId, payDate   |                                               |
 
-1. SalaryType Table:
-  * Columns:
-    * id: Integer, Primary Key, Autoincrement
-    * type: String
-    * description: String
-  * Relationships:
-    * One-to-Many with Employee table (employees field)
-2. Company Table:
+1. Company Table:
   * Columns:
     * id: Integer, Primary Key, Autoincrement
     * name: String
     * address: String
   * Relationships:
     * One-to-Many with Employee table (employees field)
-3. Employee Table:
+2. Employee Table:
   * Columns:
     * id: Integer, Primary Key, Autoincrement
     * username: String
@@ -136,19 +128,37 @@ docker-compose down
     * payDate: Integer, Default 1 (map to pay_date)
   * Relationships:
     * Many-to-One with Company table (company field)
-    * Many-to-One with SalaryType table (salaryType field)
 
 ## Database Schema Description
-* SalaryType Table:
-  * Represents different types of salary structures.
-  * Contains fields for id, type (e.g., hourly, monthly), and description.
-* Company Table:
-  * Stores information about companies.
-  * Includes fields for id, name, and address.
-* Employee Table:
-  * Holds details about employees.
-  * Includes fields for id, username, email, salary, payDate (defaulted to 1), and foreign keys for companyId and salaryTypeId.
-  * Establishes relationships with Company (many employees belong to one company) and SalaryType (each employee has a salary type).
+  * Company Table:
+    * Stores information about companies.
+    * Includes fields for id, name, and address.
+  * Employee Table:
+    * Holds details about employees.
+    * Includes fields for id, username, email, salary, payDate (defaulted to 1), and foreign keys for companyId and salaryTypeId.
+    * Establishes relationships with Company (many employees belong to one company) and SalaryType (each employee has a salary type).
+
+## Salary Types for Employees
+
+### Enum Definitions
+
+We're using constants to store employees' salary types instead of a data table for a single source of truth.
+
+```typescript
+// Enum defining different salary types
+export enum SalaryTypes {
+  DAILY = 1, // Salary calculated on a daily basis
+  MONTHLY = 2, // Salary calculated on a monthly basis
+  MONTH_TO_DATE = 3, // Salary calculated from the start of the month to the current date
+}
+
+// Salary Types Description
+export const SalaryTypesDescription = {
+  [SalaryTypes.DAILY]: 'Daily rate',
+  [SalaryTypes.MONTHLY]: 'Monthly rate',
+  [SalaryTypes.MONTH_TO_DATE]: 'Monthly rate with payment date',
+}
+```
 
 ## License
 
