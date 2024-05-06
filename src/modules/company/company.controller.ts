@@ -1,10 +1,11 @@
 import { Controller, Body, Delete, Get, NotFoundException, Logger, Param, Post, Put, Query } from '@nestjs/common'
-import { ApiBody, ApiCreatedResponse, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiCreatedResponse, ApiParam, ApiTags } from '@nestjs/swagger'
 import { Company } from '@prisma/client'
 import { CompanyService } from '@app/modules/company/company.service'
 import { ParseIntPipe } from '@app/common/pipes/parse-int.pipe'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { CompanyEntity } from './entities/company.entity'
+import { SearchCompanyDto } from './dto/search-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
 import { CompanyWithEmployees } from './types'
 
@@ -22,27 +23,9 @@ export class CompanyController {
    * @returns A Promise resolving to an array of object representing the companies with details.
    */
   @Get()
-  @ApiQuery({
-    name: 'name',
-    description: 'Company name',
-    required: false,
-    type: String,
-  })
-  @ApiQuery({
-    name: 'id',
-    description: 'Company ID',
-    required: false,
-    type: Number,
-  })
-  async getCompanies(
-    @Query('id', new ParseIntPipe()) id: number,
-    @Query('name') name: string,
-  ): Promise<Company[] | NotFoundException> {
+  async getCompanies(@Query() searchCompanyDto: SearchCompanyDto): Promise<Company[] | NotFoundException> {
     // Call the companyService to retrieve the companies with filter by company id or company name
-    return this.companyService.getCompanies({
-      name,
-      id,
-    })
+    return this.companyService.getCompanies(searchCompanyDto)
   }
 
   /**

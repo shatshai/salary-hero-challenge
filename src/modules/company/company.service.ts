@@ -1,7 +1,8 @@
 import { Logger, Injectable, NotFoundException } from '@nestjs/common'
-import { Company, Prisma } from '@prisma/client'
+import { Company } from '@prisma/client'
 import { isEmpty } from 'lodash'
 import { CompanyRepository } from '@app/modules/company/company.repository'
+import { SearchCompanyDto } from './dto/search-company.dto'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
 import { CompanyWithEmployees } from './types'
@@ -15,13 +16,13 @@ export class CompanyService {
 
   /**
    * Retrieves companies based on the provided criteria and computes their salary rates.
-   * @param companyWhereInput The criteria for filtering companies.
+   * @param searchCompanyDto The criteria for filtering companies.
    * @returns A promise resolving to an array of companies, or null if no companies match the criteria.
    */
-  async getCompanies(companyWhereInput: Prisma.CompanyWhereInput): Promise<Company[] | NotFoundException> {
+  async getCompanies(searchCompanyDto: SearchCompanyDto): Promise<Company[] | NotFoundException> {
     try {
       // Retrieve companies from the repository based on the input criteria
-      const companies = await this.companyRepository.getCompanies(companyWhereInput)
+      const companies = await this.companyRepository.getCompanies(searchCompanyDto)
 
       if (isEmpty(companies)) {
         throw new NotFoundException('Company not found')

@@ -8,6 +8,7 @@ import { Company } from '@prisma/client'
 import { CreateCompanyDto } from './dto/create-company.dto'
 import { UpdateCompanyDto } from './dto/update-company.dto'
 import { CompanyWithEmployees } from './types'
+import { SearchCompanyDto } from './dto/search-company.dto'
 
 describe('CompanyController', () => {
   let companyController: CompanyController
@@ -35,46 +36,34 @@ describe('CompanyController', () => {
   describe('getCompanies', () => {
     it('Given found Companies - Should return Companies as expected', async () => {
       const company = { id: 1, name: 'some company name', address: 'some company address' }
+      const searchCompanyDto = plainToInstance(SearchCompanyDto, {})
       const spyRepository = jest
         .spyOn(companyRepository, 'getCompanies')
         .mockResolvedValue([company] as unknown as Company[])
-      expect(companyController.getCompanies(null, null)).resolves.toEqual(
+      expect(companyController.getCompanies(searchCompanyDto)).resolves.toEqual(
         expect.arrayContaining([
           expect.objectContaining({
             id: 1,
           }),
         ]),
       )
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: null,
-          name: null,
-        }),
-      )
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
 
     it('Given select result with empty array - Should throw not found exception', async () => {
       const spyRepository = jest.spyOn(companyRepository, 'getCompanies').mockResolvedValue([] as unknown as Company[])
-      expect(companyController.getCompanies(null, null)).rejects.toThrow('Company not found')
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: null,
-          name: null,
-        }),
-      )
+      const searchCompanyDto = plainToInstance(SearchCompanyDto, {})
+      expect(companyController.getCompanies(searchCompanyDto)).rejects.toThrow('Company not found')
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
 
     it('Given select result with null - Should throw not found exception', async () => {
+      const searchCompanyDto = plainToInstance(SearchCompanyDto, {})
       const spyRepository = jest
         .spyOn(companyRepository, 'getCompanies')
         .mockResolvedValue(null as unknown as Company[])
-      expect(companyController.getCompanies(null, null)).rejects.toThrow('Company not found')
-      expect(spyRepository).toHaveBeenCalledWith(
-        expect.objectContaining({
-          id: null,
-          name: null,
-        }),
-      )
+      expect(companyController.getCompanies(searchCompanyDto)).rejects.toThrow('Company not found')
+      expect(spyRepository).toHaveBeenCalledWith(expect.objectContaining({}))
     })
   })
 

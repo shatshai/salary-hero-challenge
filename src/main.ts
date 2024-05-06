@@ -8,7 +8,14 @@ import { HttpExceptionFilter } from '@app/common/filters/http-exception.filter'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
-  app.useGlobalPipes(new ValidationPipe())
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  )
 
   // Binding Swagger APIs documents
   const config = new DocumentBuilder()
